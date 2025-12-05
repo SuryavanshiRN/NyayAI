@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatbot Dashboard - Indian Constitution</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/framer-motion/dist/framer-motion.umd.js"></script>
+
+  <style>
+    body {
+      background: linear-gradient(to right, #1c1c1c, #2c2c2c, #3a3a3a);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+    }
+
+    .chatbot-btn {
+      background-color: white;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s;
+    }
+
+    .chatbot-btn:hover {
+      background-color: #f1f1f1;
+      transform: scale(1.05);
+    }
+
+    /* Loading Dots Animation */
+    .dots-loader {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: black;
+      border-radius: 50%;
+      animation: pulse 1.2s infinite ease-in-out;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes pulse {
+      0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.4;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .dots-loader.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+
+    .chatbot-btn {
+  background: white;
+  color: black;
+  border: none;
+  padding: 12px 28px;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.chatbot-btn:hover {
+  background: #e5e5e5;
+  transform: scale(1.05);
+}
+
+.dots-loader {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background-color: black;
+  border-radius: 50%;
+  animation: blink 1.4s infinite both;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.2; }
+  40% { opacity: 1; }
+}
+
+
+.logout-btn {
+  background-color: white;
+  color: black;
+  font-weight: 600;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.logout-btn:hover {
+  background-color: #f3f3f3;
+  transform: scale(1.03);
+}
+
+.dots-loader {
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.dots-loader .dot {
+  width: 6px;
+  height: 6px;
+  background-color: black;
+  border-radius: 50%;
+  animation: blink 1.2s infinite ease-in-out;
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+}
+
+  </style>
+</head>
+
+<body class="min-h-screen">
+  <!-- Navbar -->
+  <nav class="bg-gray-900 shadow-lg p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-white">NyayAI</h1>
+    <button id="logout-btn" class="logout-btn" onclick="logoutRedirect()">
+  <span class="btn-text">Logout</span>
+  <div id="logout-dots" class="dots-loader">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</button>
+
+
+
+  </nav>
+
+  <!-- Dashboard Header -->
+  <section class="text-center py-10">
+    <h2 class="text-4xl font-extrabold text-white mb-4">Welcome to the NyayAI Dashboard</h2>
+    <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+      Explore the Indian Constitution, learn its history, and ask our chatbot your questions interactively!
+    </p>
+  </section>
+
+  <!-- Content Grid -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-8 px-10 py-8">
+    <!-- About Section -->
+    <div class="card bg-gray-800 rounded-2xl p-6">
+      <img src="static\constitution.webp" alt="Constitution" class="rounded-xl mb-4 shadow-md" />
+      <h3 class="text-2xl font-bold mb-3 text-white">About the Indian Constitution</h3>
+      <p class="text-gray-300">
+        The Constitution of India is the supreme law of the land. It lays down the framework defining fundamental political principles, powers of government, and citizens' rights and duties.
+      </p>
+    </div>
+
+    <!-- History Section -->
+    <div class="card bg-gray-800 rounded-2xl p-6">
+      <img src="static\assembly.webp" alt="History" class="rounded-xl mb-4 shadow-md" />
+      <h3 class="text-2xl font-bold mb-3 text-white">History</h3>
+      <p class="text-gray-300">
+        Drafted by the Constituent Assembly, chaired by Dr. B.R. Ambedkar, the Constitution came into effect on 26 January 1950. It replaced the Government of India Act (1935) and established India as a sovereign republic.
+      </p>
+    </div>
+
+    <!-- Chatbot Usage Section -->
+    <div class="card bg-gray-800 rounded-2xl p-6 flex flex-col justify-between">
+      <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" alt="Chatbot" class="w-32 mx-auto mb-4" />
+      <h3 class="text-2xl font-bold mb-3 text-white">How to Use the Chatbot</h3>
+      <p class="text-gray-300 mb-4">
+        🗨️ Type your questions about the Constitution, laws, or fundamental rights. <br />
+        💡 The chatbot gives instant, accurate, and friendly responses. <br />
+        ⚖️ You can ask definitions, articles, or history-related questions anytime.
+      </p>
+
+      <!-- Chatbot Redirect Button -->
+      <button id="chatbot-btn" class="chatbot-btn" onclick="openChatbot()">
+  <span class="btn-text">Open Chatbot</span>
+  <div id="dots-loader" class="dots-loader">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</button>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-400 py-4 mt-8 border-t border-gray-700">
+    <p>© 2025 Constitution Chatbot | Made with ❤️ by Team NyayAI for India</p>
+  </footer>
+
+  <script>
+    function openChatbot() {
+      const btnText = document.getElementById('btn-text');
+      const loader = document.getElementById('dots-loader');
+      const button = document.getElementById('chatbot-btn');
+
+      // Disable the button temporarily
+      button.disabled = true;
+      btnText.textContent = 'Loading';
+      loader.classList.add('active');
+
+      // Simulate loading for 2 seconds
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
+    }
+  </script>
+  <script>
+function openChatbot() {
+  const btnText = document.querySelector(".btn-text");
+  const loader = document.getElementById("dots-loader");
+
+  // Show loading animation
+  btnText.textContent = "Opening...";
+  loader.style.display = "flex";
+
+  // Redirect after short delay
+  setTimeout(() => {
+    window.location.href = "/index"; // Chatbot page URL
+  }, 1500);
+}
+</script>
+<script>
+function logoutRedirect() {
+  const btn = document.getElementById("logout-btn");
+  const text = btn.querySelector(".btn-text");
+  const loader = document.getElementById("logout-dots");
+
+  text.textContent = "Logging out...";
+  loader.style.display = "flex";
+
+  setTimeout(() => {
+    window.location.href = "/bye";  // 👈 Redirect to goodbye page
+  }, 1500);
+}
+
+</script>
+
+
+</body>
+</html>

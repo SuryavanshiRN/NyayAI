@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NyayAI — Your Legal Assistant</title>
+
+    <!-- Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        background: linear-gradient(180deg, #1a1a1a 0%, #2b2b2b 100%);
+        color: #f5f5f5;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Floating background icons */
+      .bg-symbol {
+        position: absolute;
+        font-size: 60px;
+        color: rgba(255, 255, 255, 0.05);
+        animation: float 10s ease-in-out infinite alternate;
+      }
+
+      .bg-symbol:nth-child(1) {
+        top: 12%;
+        left: 6%;
+        animation-delay: 0s;
+      }
+      .bg-symbol:nth-child(2) {
+        top: 55%;
+        right: 10%;
+        animation-delay: 3s;
+      }
+      .bg-symbol:nth-child(3) {
+        bottom: 12%;
+        left: 15%;
+        animation-delay: 5s;
+      }
+
+      @keyframes float {
+        from {
+          transform: translateY(0px);
+        }
+        to {
+          transform: translateY(-20px);
+        }
+      }
+
+      header {
+        background: linear-gradient(90deg, #000000, #2b2b2b);
+        color: #ffffff;
+        padding: 18px;
+        text-align: center;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .chat-container {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        z-index: 2;
+      }
+
+      .message {
+        max-width: 75%;
+        padding: 12px 16px;
+        border-radius: 14px;
+        line-height: 1.45;
+        font-size: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 0.25s ease-out;
+      }
+
+      .user {
+        align-self: flex-end;
+        background: #3b3b3b;
+        color: #ffffff;
+        border-top-right-radius: 0;
+      }
+
+      .bot {
+        align-self: flex-start;
+        background: #f1f1f1;
+        color: #141414;
+        border-top-left-radius: 0;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Typing indicator */
+      .typing {
+        display: inline-block;
+        padding: 12px 16px;
+        background: #f1f1f1;
+        border-radius: 12px;
+        border: none;
+        width: fit-content;
+        align-self: flex-start;
+      }
+
+      .typing span {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: #555;
+        border-radius: 50%;
+        margin: 0 2px;
+        animation: blink 1.4s infinite;
+      }
+
+      .typing span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes blink {
+        0% {
+          opacity: 0.2;
+        }
+        20% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.2;
+        }
+      }
+
+      /* Input bar */
+      .input-bar {
+        padding: 14px;
+        background: #1c1c1c;
+        border-top: 1px solid #444;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        z-index: 3;
+      }
+
+      #prompt {
+        flex: 1;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid #666;
+        outline: none;
+        background: #2b2b2b;
+        color: #f5f5f5;
+        font-size: 15px;
+        transition: all 0.2s ease;
+      }
+
+      #prompt:focus {
+        border-color: #f5f5f5;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+      }
+
+      button {
+        padding: 12px 18px;
+        background: #000000;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+
+      button:hover {
+        background: #444;
+        transform: scale(1.05);
+      }
+
+      #mic {
+        background: #3a3a3a;
+        color: #ffffff;
+      }
+
+      #mic:hover {
+        background: #555;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 6px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #777;
+      }
+
+      /* Big background ⚖️ icon */
+    .bg-big-icon {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 300px; /* You can adjust size */
+      color: rgba(255, 255, 255, 0.03); /* Very light for subtle effect */
+      z-index: 0; /* Keeps it behind everything */
+      pointer-events: none; /* Prevents blocking clicks */
+    }
+
+    .home-btn {
+  margin-left: auto;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+  background: #f5f5f5;
+  transform: scale(1.05);
+}
+
+    </style>
+  </head>
+
+  <body>
+    <!-- Floating icons -->
+    <i class="fa-solid fa-scale-balanced bg-symbol"></i>
+    <i class="fa-solid fa-gavel bg-symbol"></i>
+    <i class="fa-solid fa-balance-scale bg-symbol"></i>
+
+    <header>
+  <i class="fa-solid fa-scale-balanced"></i> NyayAI — AI for Your Nyay
+  <button class="home-btn" onclick="window.location.href='dashboard'">
+    <i class="fa-solid fa-house"></i> Home
+  </button>
+</header>
+
+
+    <div class="chat-container" id="chat">
+      <div class="message bot">
+        ⚖️ <b>Welcome to NyayAI</b><br />
+        Your intelligent legal assistant is ready to help. Please ask your
+        question below.
+      </div>
+    </div>
+
+    <div class="input-bar">
+      <input type="text" id="prompt" placeholder="Ask your legal question..." />
+      <button id="mic" title="Speak your question">
+        <i class="fa-solid fa-microphone"></i>
+      </button>
+      <button onclick="askQuestion()">Send</button>
+    </div>
+
+    <script>
+      const chatDiv = document.getElementById("chat");
+      const promptInput = document.getElementById("prompt");
+      const micButton = document.getElementById("mic");
+
+      async function askQuestion() {
+        const question = promptInput.value.trim();
+        if (!question) return;
+
+        chatDiv.innerHTML += `<div class="message user">${question}</div>`;
+        promptInput.value = "";
+
+        const typing = document.createElement("div");
+        typing.className = "typing";
+        typing.innerHTML = "<span></span><span></span><span></span>";
+        chatDiv.appendChild(typing);
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+
+        try {
+          const response = await fetch("/ask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt: question }),
+          });
+
+          const data = await response.json();
+          typing.remove();
+
+          const formatted = data.response.replace(/\n/g, "<br>");
+          chatDiv.innerHTML += `<div class="message bot">${formatted}</div>`;
+        } catch (error) {
+          typing.remove();
+          chatDiv.innerHTML += `<div class="message bot" style="color:red;">⚠ Server error. Please try again later.</div>`;
+        }
+
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+      }
+
+      promptInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") askQuestion();
+      });
+
+      // Speech Recognition
+      if ("webkitSpeechRecognition" in window) {
+        const recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = "en-IN";
+
+        micButton.addEventListener("click", () => {
+          recognition.start();
+          micButton.style.background = "#888";
+        });
+
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          promptInput.value = transcript;
+          micButton.style.background = "#3a3a3a";
+        };
+
+        recognition.onerror = () => {
+          micButton.style.background = "#3a3a3a";
+        };
+      }
+    </script>
+    <script>
+      const user = localStorage.getItem("username");
+      if (!user) {
+        window.location.href = "login.html"; // Redirect if not logged in
+      }
+    </script>
+
+  </body>
+</html>
